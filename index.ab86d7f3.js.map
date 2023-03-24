@@ -1,0 +1,1 @@
+{"mappings":"AAEAA,QAAQC,IAAIC","sources":["src/index.js"],"sourcesContent":["import axios from \"axios\";\n\nconsole.log(axious);"],"names":["console","log","axious"],"version":3,"file":"index.ab86d7f3.js.map"}
