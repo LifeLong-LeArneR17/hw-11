@@ -7,9 +7,10 @@ export class Api {
         this.query = null;
 
     }
+
     fetchPhotosbyQuery() {
         const searchParams = new URLSearchParams({
-            q: 'cat',
+            q: this.query,
             page: this.page,
             image_type: 'photo',
             orientation: 'horizontal',
@@ -21,9 +22,8 @@ export class Api {
                 throw new Error(response.status)
             }
             return response.json()
-        }).then(data => {
-        }).catch(error => {
-        })
+        }
+        );
     }
 }
 
