@@ -17,7 +17,6 @@ header {
   background-color: #4056b4;
   padding: 10px;
 }
-
 button {
   appearance: none;
   background-color: #2ea44f;
@@ -64,12 +63,10 @@ button:active {
   background-color: #298e46;
   box-shadow: rgba(20, 70, 32, 0.2) 0 1px 0 inset;
 }
-
 input {
   padding: 10px;
   border-radius: 6px;
 }
-
 img {
   display: block;
   max-width: 100%;
@@ -77,18 +74,15 @@ img {
   width: 431px;
   object-fit: cover;
 }
-
 .search-form {
   display: inline-block;
   margin-left: auto;
   margin-right: auto;
   text-align: left;
 }
-
 .is-hidden {
   display: none;
 }
-
 .gallery {
   display: flex;
   flex-wrap: wrap;
@@ -96,24 +90,20 @@ img {
   margin-top: -30px;
   margin-bottom: 20px;
 }
-
 .photo-card {
   width: calc((100% - 120px) / 4);
   margin-left: 30px;
   margin-top: 30px;
 }
-
 .container {
   display: flex;
   justify-content: center;
 }
-
 .info {
   display: flex;
   flex-wrap: wrap;
   margin-left: 5px;
 }
-
 .info-item {
   width: calc((100% - 10px) / 2);
   margin-top: 0px;
