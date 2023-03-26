@@ -3,6 +3,7 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { Api } from "./FetchPictures";
 import { createGalleryCards } from "./gallery";
+import '../src/sass/form.css';
 
 
 
