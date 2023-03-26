@@ -1,9 +1,10 @@
 import '../src/sass/form.css';
 import { Api } from './FetchPictures';
-import { createGalleryCards } from './gallery';
-import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
+import { createGalleryCards } from './gallery';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
+
 
 const unsplashApi = new Api();
 const searchFormEl = document.querySelector('#search-form');
@@ -36,6 +37,14 @@ const observer = new IntersectionObserver(
   }
 );
 
+
+let gallery = new SimpleLightbox('.gallery a', {
+  captionsData: 'alt',
+  captionDelay: 250,
+});
+
+
+
 const onSearchFormSubmit = async event => {
   event.preventDefault();
   searchBtn.disabled = true;
@@ -50,12 +59,14 @@ const onSearchFormSubmit = async event => {
       event.target.reset();
       loadMoreBtnEl.classList.add('is-hidden');
       galleryList.innerHTML = '';
+      gallery.refresh();
       searchBtn.disabled = false;
       return;
     }
 
     if (data.totalHits === 1) {
       galleryList.innerHTML = createGalleryCards(data.hits);
+      gallery.refresh();
       loadMoreBtnEl.classList.add('is-hidden');
       return;
     }
@@ -63,6 +74,7 @@ const onSearchFormSubmit = async event => {
     if (data.total === data.totalHits) {
       Notify.success(`Hooray! We found ${data.totalHits} images.`);
       galleryList.innerHTML = createGalleryCards(data.hits);
+      gallery.refresh();
       loadMoreBtnEl.classList.add('is-hidden');
       searchBtn.disabled = false;
       return;
@@ -70,6 +82,7 @@ const onSearchFormSubmit = async event => {
 
     Notify.success(`Hooray! We found ${data.totalHits} images.`);
     galleryList.innerHTML = createGalleryCards(data.hits);
+    gallery.refresh();
     observer.observe(targetEl);
     loadMoreBtnEl.classList.remove('is-hidden');
   } catch (error) {
@@ -89,6 +102,7 @@ const onLoadMoreBtnClick = event => {
         'beforeend',
         createGalleryCards(data.hits)
       );
+      gallery.refresh();
       const { height: cardHeight } = document
         .querySelector('.gallery')
         .firstElementChild.getBoundingClientRect();
@@ -110,9 +124,7 @@ const onLoadMoreBtnClick = event => {
 };
 
 
-let gallery = new SimpleLightbox('.gallery a');
-gallery.on('show.simplelightbox', function () {
-});
+
 
 searchFormEl.addEventListener('submit', onSearchFormSubmit);
 loadMoreBtnEl.addEventListener('click', onLoadMoreBtnClick);
