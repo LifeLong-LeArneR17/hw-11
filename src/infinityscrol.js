@@ -1,12 +1,29 @@
+import SimpleLightbox from "simplelightbox";
+import "simplelightbox/dist/simple-lightbox.min.css";
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { Api } from "./FetchPictures";
 import { createGalleryCards } from "./gallery";
-import { Notify } from 'notiflix/build/notiflix-notify-aio';
+
+
+
+
 const unsplashApi = new Api();
 const searchFormEl = document.querySelector('#search-form');
 const galleryList = document.querySelector('.gallery');
 const loadMoreBtnEl = document.querySelector('.load-more');
 const searchBtn = document.querySelector('button');
 const targetEl = document.querySelector('.target-element')
+const galleryImages = document.querySelector('.gallery');
+
+
+
+let gallery = new SimpleLightbox('.gallery a', {
+    captionsData: 'alt',
+    captionDelay: 250,
+});
+
+
+gallery.on('show.simplelightbox', function () { });
 
 const observer = new IntersectionObserver(async entries => {
     if (!entries[0].isIntersecting) {
@@ -66,6 +83,10 @@ const onSearchFormSubmit = async event => {
         Notify.success(`Hooray! We found ${data.totalHits} images.`);
         galleryList.innerHTML = createGalleryCards(data.hits);
         observer.observe(targetEl);
+        gallery.on('show.simplelightbox', function () {
+        });
+
+
     } catch (error) {
         console.log(error);
     }
@@ -86,7 +107,6 @@ const onLoadMoreBtnClick = async event => {
         console.log(error);
     }
 }
-
 
 searchFormEl.addEventListener('submit', onSearchFormSubmit);
 loadMoreBtnEl.addEventListener('click', onLoadMoreBtnClick);

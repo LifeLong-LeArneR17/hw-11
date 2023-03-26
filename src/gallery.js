@@ -2,7 +2,7 @@ export const createGalleryCards = cardInfo => {
     const galleryCardsArr = cardInfo.map(el => {
         return `
        <div class="photo-card">
-  <img src="${el.webformatURL}" alt="${el.tags}" loading="lazy" />
+  <a href="${el.largeImageURL}"><img src="${el.webformatURL}" alt="${el.tags}" loading="lazy" /></a>
   <div class="info">
     <p class="info-item">
       <b>Likes: ${el.likes}</b>
