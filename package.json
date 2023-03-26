@@ -5,7 +5,7 @@
   "homepage": "https://github.com/LifeLong-LeArneR17/hw-11/settings/pages",
   "scripts": {
     "start": "parcel src/*.html",
-    "build": "parcel build src/*.html --public-url /parcel-project-template/"
+    "build": "https://github.com/LifeLong-LeArneR17/hw-11/settings/pages"
   },
   "repository": {
     "type": "git",
