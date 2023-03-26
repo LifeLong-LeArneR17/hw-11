@@ -5,7 +5,6 @@ import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 
-
 const unsplashApi = new Api();
 const searchFormEl = document.querySelector('#search-form');
 const galleryList = document.querySelector('.gallery');
@@ -78,36 +77,6 @@ const onSearchFormSubmit = async event => {
   }
   searchBtn.disabled = false;
 
-  // unsplashApi.fetchPhotosbyQuery().then( ({data}) => {
-  // if (data.hits.length === 0) {
-  //     Notify.failure('Sorry, there are no images matching your search query. Please try again.');
-  //     event.target.reset();
-  //     loadMoreBtnEl.classList.add('is-hidden');
-  //     galleryList.innerHTML = '';
-  //     return;
-  // }
-
-  // if (data.totalHits === 1) {
-  //     galleryList.innerHTML = createGalleryCards(data.hits);
-  //     loadMoreBtnEl.classList.add('is-hidden');
-  //     return;
-  // }
-
-  // if (data.total === data.totalHits) {
-  //     galleryList.innerHTML = createGalleryCards(data.hits);
-  //     loadMoreBtnEl.classList.add('is-hidden');
-  //     Notify.failure("We're sorry, but you've reached the end of search results.");
-  //     return;
-  // }
-
-  //         Notify.success(`Hooray! We found ${data.totalHits} images.`);
-  //         galleryList.innerHTML = createGalleryCards(data.hits);
-  //         loadMoreBtnEl.classList.remove('is-hidden');
-  //     }).catch(error => {
-  //         console.log(error);
-  //     }).finally(() => {
-  //         searchBtn.disabled = false
-  //     })
 };
 
 const onLoadMoreBtnClick = event => {
@@ -143,7 +112,6 @@ const onLoadMoreBtnClick = event => {
 
 let gallery = new SimpleLightbox('.gallery a');
 gallery.on('show.simplelightbox', function () {
-    // do something…
 });
 
 searchFormEl.addEventListener('submit', onSearchFormSubmit);
