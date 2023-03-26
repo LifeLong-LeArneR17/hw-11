@@ -1,30 +1,37 @@
 import { Api } from "./FetchPictures";
 import { createGalleryCards } from "./gallery";
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
-
-
 const unsplashApi = new Api();
 const searchFormEl = document.querySelector('#search-form');
 const galleryList = document.querySelector('.gallery');
 const loadMoreBtnEl = document.querySelector('.load-more');
 const searchBtn = document.querySelector('button');
-const targetEl = document.querySelector('target-element')
-console.log(targetEl);
+const targetEl = document.querySelector('.target-element')
 
-var observer = new IntersectionObserver(entries => {
+const observer = new IntersectionObserver(async entries => {
     if (!entries[0].isIntersecting) {
         return;
     }
-    console.log('hello');
+    try {
+        unsplashApi.page += 1;
+        const { data } = await unsplashApi.fetchPhotosbyQuery();
+        galleryList.insertAdjacentHTML('beforeend', createGalleryCards(data.hits));
+        if (data.totalHits === unsplashApi.page) {
+            Notify.failure("We're sorry, but you've reached the end of search results.");
+            searchBtn.disabled = false;
+        }
+
+    } catch (error) {
+        console.log(error);
+    }
 },
+
     {
-     
         root: null,
-        rootMargin: 'opx',
+        rootMargin: '0px 0px 400px 0px',
         threshold: 1.0,
     }
 );
-
 
 const onSearchFormSubmit = async event => {
     event.preventDefault();
@@ -39,6 +46,7 @@ const onSearchFormSubmit = async event => {
             event.target.reset();
             loadMoreBtnEl.classList.add('is-hidden');
             galleryList.innerHTML = '';
+            searchBtn.disabled = false;
             return;
         }
 
@@ -48,75 +56,42 @@ const onSearchFormSubmit = async event => {
             return;
         }
 
-        if (data.total === data.totalHits) {
-            galleryList.innerHTML = createGalleryCards(data.hits);
-            loadMoreBtnEl.classList.add('is-hidden');
-            Notify.failure("We're sorry, but you've reached the end of search results.");
-            return;
-        }
+        // if (data.total === data.totalHits) {
+        //     galleryList.innerHTML = createGalleryCards(data.hits);
+        //     loadMoreBtnEl.classList.add('is-hidden');
+        //     Notify.failure("We're sorry, but you've reached the end of search results.");
+        //     return;
+        // }
 
         Notify.success(`Hooray! We found ${data.totalHits} images.`);
         galleryList.innerHTML = createGalleryCards(data.hits);
-        loadMoreBtnEl.classList.remove('is-hidden');
+        observer.observe(targetEl);
     } catch (error) {
         console.log(error);
     }
     searchBtn.disabled = false
-
-    // unsplashApi.fetchPhotosbyQuery().then( ({data}) => {
-    // if (data.hits.length === 0) {
-    //     Notify.failure('Sorry, there are no images matching your search query. Please try again.');
-    //     event.target.reset();
-    //     loadMoreBtnEl.classList.add('is-hidden');
-    //     galleryList.innerHTML = '';
-    //     return;
-    // }
-
-    // if (data.totalHits === 1) {
-    //     galleryList.innerHTML = createGalleryCards(data.hits);
-    //     loadMoreBtnEl.classList.add('is-hidden');
-    //     return;
-    // }
-
-    // if (data.total === data.totalHits) {
-    //     galleryList.innerHTML = createGalleryCards(data.hits);
-    //     loadMoreBtnEl.classList.add('is-hidden');
-    //     Notify.failure("We're sorry, but you've reached the end of search results.");
-    //     return;
-    // }
-
-    //         Notify.success(`Hooray! We found ${data.totalHits} images.`);
-    //         galleryList.innerHTML = createGalleryCards(data.hits);
-    //         loadMoreBtnEl.classList.remove('is-hidden');
-    //     }).catch(error => {
-    //         console.log(error);
-    //     }).finally(() => {
-    //         searchBtn.disabled = false
-    //     })
 }
 
-const onLoadMoreBtnClick = event => {
-    unsplashApi.page += 1;
-    unsplashApi.fetchPhotosbyQuery().then(({ data }) => {
-        galleryList.insertAdjacentHTML('beforeend', createGalleryCards(data.hits))
-    }).catch(error => {
+const onLoadMoreBtnClick = async event => {
+    try {
+        unsplashApi.page += 1;
+        const { data } = await unsplashApi.fetchPhotosbyQuery();
+        galleryList.insertAdjacentHTML('beforeend', createGalleryCards(data.hits));
+        if (data.totalHits === unsplashApi.page) {
+            Notify.failure("We're sorry, but you've reached the end of search results.");
+            searchBtn.disabled = false;
+        }
+
+    } catch (error) {
         console.log(error);
-    })
+    }
 }
+
 
 searchFormEl.addEventListener('submit', onSearchFormSubmit);
 loadMoreBtnEl.addEventListener('click', onLoadMoreBtnClick);
 
 
 
-let options = {
-    root: document.querySelector("#scrollArea"),
-    rootMargin: "0px",
-    threshold: 1.0,
-};
-
-const observer = new IntersectionObserver(() => {
-
-}, options);
 
 

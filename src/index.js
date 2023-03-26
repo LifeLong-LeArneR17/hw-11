@@ -8,8 +8,28 @@ const searchFormEl = document.querySelector('#search-form');
 const galleryList = document.querySelector('.gallery');
 const loadMoreBtnEl = document.querySelector('.load-more');
 const searchBtn = document.querySelector('button');
+const targetEl = document.querySelector('.target-element')
 
-
+const observer = new IntersectionObserver(async entries => {
+    if (!entries[0].isIntersecting) {
+        return;
+    }
+    try {
+        const { data } = await unsplashApi.fetchPhotosbyQuery();
+        if (data.totalHits === data.total) {
+            Notify.failure("We're sorry, but you've reached the end of search results.");
+            searchBtn.disabled = false;
+        }
+    } catch (error) {
+        console.log(error);
+    }
+},
+    {
+        root: null,
+        rootMargin: '0px 0px 400px 0px',
+        threshold: 1.0,
+    }
+);
 
 
 
@@ -18,7 +38,6 @@ const onSearchFormSubmit = async event => {
     searchBtn.disabled = true;
     unsplashApi.query = event.target.elements.searchQuery.value;
     unsplashApi.page = 1;
-
     try {
         const { data } = await unsplashApi.fetchPhotosbyQuery();
         if (data.hits.length === 0) {
@@ -26,6 +45,7 @@ const onSearchFormSubmit = async event => {
             event.target.reset();
             loadMoreBtnEl.classList.add('is-hidden');
             galleryList.innerHTML = '';
+            searchBtn.disabled = false;
             return;
         }
 
@@ -36,15 +56,18 @@ const onSearchFormSubmit = async event => {
         }
 
         if (data.total === data.totalHits) {
+            Notify.success(`Hooray! We found ${data.totalHits} images.`);
             galleryList.innerHTML = createGalleryCards(data.hits);
             loadMoreBtnEl.classList.add('is-hidden');
-            Notify.failure("We're sorry, but you've reached the end of search results.");
+            searchBtn.disabled = false;
             return;
         }
 
-        Notify.success(`Hooray! We found ${data.totalHits} images.`);
-        galleryList.innerHTML = createGalleryCards(data.hits);
-        loadMoreBtnEl.classList.remove('is-hidden');
+    Notify.success(`Hooray! We found ${data.totalHits} images.`);
+    galleryList.innerHTML = createGalleryCards(data.hits);
+    observer.observe(targetEl);
+    loadMoreBtnEl.classList.remove('is-hidden');
+
     } catch (error) {
         console.log(error);
     }
@@ -84,27 +107,39 @@ const onSearchFormSubmit = async event => {
 
 const onLoadMoreBtnClick = event => {
     unsplashApi.page += 1;
+
     unsplashApi.fetchPhotosbyQuery().then( ({data}) => {
         galleryList.insertAdjacentHTML('beforeend', createGalleryCards(data.hits))
+        const { height: cardHeight } = document
+            .querySelector(".gallery")
+            .firstElementChild.getBoundingClientRect();
+        console.log(cardHeight);
+        window.scrollBy({
+            top: cardHeight * 2,
+            behavior: "smooth",
+        });
+        if (data.totalHits === data.total) {
+            loadMoreBtnEl.classList.add('is-hidden');
+            Notify.info("We're sorry, but you've reached the end of search results.");
+        }
     }).catch(error => {
         console.log(error);
     })
 }
+
+
+
+
+
+
+
+
 
 searchFormEl.addEventListener('submit', onSearchFormSubmit);
 loadMoreBtnEl.addEventListener('click', onLoadMoreBtnClick);
 
 
 
-let options = {
-    root: document.querySelector("#scrollArea"),
-    rootMargin: "0px",
-    threshold: 1.0,
-}; 
-
-const observer = new IntersectionObserver(() => {
-    
-}, options);
 
 
 
