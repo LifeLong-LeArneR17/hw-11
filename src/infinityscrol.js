@@ -8,9 +8,22 @@ const searchFormEl = document.querySelector('#search-form');
 const galleryList = document.querySelector('.gallery');
 const loadMoreBtnEl = document.querySelector('.load-more');
 const searchBtn = document.querySelector('button');
+const targetEl = document.querySelector('target-element')
+console.log(targetEl);
 
-
-
+var observer = new IntersectionObserver(entries => {
+    if (!entries[0].isIntersecting) {
+        return;
+    }
+    console.log('hello');
+},
+    {
+     
+        root: null,
+        rootMargin: 'opx',
+        threshold: 1.0,
+    }
+);
 
 
 const onSearchFormSubmit = async event => {
@@ -49,42 +62,42 @@ const onSearchFormSubmit = async event => {
         console.log(error);
     }
     searchBtn.disabled = false
-    
+
     // unsplashApi.fetchPhotosbyQuery().then( ({data}) => {
-        // if (data.hits.length === 0) {
-        //     Notify.failure('Sorry, there are no images matching your search query. Please try again.');
-        //     event.target.reset();
-        //     loadMoreBtnEl.classList.add('is-hidden');
-        //     galleryList.innerHTML = '';
-        //     return;
-        // }
+    // if (data.hits.length === 0) {
+    //     Notify.failure('Sorry, there are no images matching your search query. Please try again.');
+    //     event.target.reset();
+    //     loadMoreBtnEl.classList.add('is-hidden');
+    //     galleryList.innerHTML = '';
+    //     return;
+    // }
 
-        // if (data.totalHits === 1) {
-        //     galleryList.innerHTML = createGalleryCards(data.hits);
-        //     loadMoreBtnEl.classList.add('is-hidden');
-        //     return;
-        // }
+    // if (data.totalHits === 1) {
+    //     galleryList.innerHTML = createGalleryCards(data.hits);
+    //     loadMoreBtnEl.classList.add('is-hidden');
+    //     return;
+    // }
 
-        // if (data.total === data.totalHits) {
-        //     galleryList.innerHTML = createGalleryCards(data.hits);
-        //     loadMoreBtnEl.classList.add('is-hidden');
-        //     Notify.failure("We're sorry, but you've reached the end of search results.");
-        //     return;
-        // }
+    // if (data.total === data.totalHits) {
+    //     galleryList.innerHTML = createGalleryCards(data.hits);
+    //     loadMoreBtnEl.classList.add('is-hidden');
+    //     Notify.failure("We're sorry, but you've reached the end of search results.");
+    //     return;
+    // }
 
-//         Notify.success(`Hooray! We found ${data.totalHits} images.`);
-//         galleryList.innerHTML = createGalleryCards(data.hits);
-//         loadMoreBtnEl.classList.remove('is-hidden');
-//     }).catch(error => {
-//         console.log(error);
-//     }).finally(() => {
-//         searchBtn.disabled = false
-//     })
+    //         Notify.success(`Hooray! We found ${data.totalHits} images.`);
+    //         galleryList.innerHTML = createGalleryCards(data.hits);
+    //         loadMoreBtnEl.classList.remove('is-hidden');
+    //     }).catch(error => {
+    //         console.log(error);
+    //     }).finally(() => {
+    //         searchBtn.disabled = false
+    //     })
 }
 
 const onLoadMoreBtnClick = event => {
     unsplashApi.page += 1;
-    unsplashApi.fetchPhotosbyQuery().then( ({data}) => {
+    unsplashApi.fetchPhotosbyQuery().then(({ data }) => {
         galleryList.insertAdjacentHTML('beforeend', createGalleryCards(data.hits))
     }).catch(error => {
         console.log(error);
@@ -100,16 +113,10 @@ let options = {
     root: document.querySelector("#scrollArea"),
     rootMargin: "0px",
     threshold: 1.0,
-}; 
+};
 
 const observer = new IntersectionObserver(() => {
-    
+
 }, options);
-
-
-
-
-
-
 
 
