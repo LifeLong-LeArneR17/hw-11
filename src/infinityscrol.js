@@ -65,26 +65,20 @@ const onSearchFormSubmit = async event => {
             loadMoreBtnEl.classList.add('is-hidden');
             galleryList.innerHTML = '';
             gallery.refresh();
-
             searchBtn.disabled = false;
             return;
         }
 
         if (data.totalHits === 1) {
             galleryList.innerHTML = createGalleryCards(data.hits);
+            gallery.refresh();
             loadMoreBtnEl.classList.add('is-hidden');
             return;
         }
 
-        // if (data.total === data.totalHits) {
-        //     galleryList.innerHTML = createGalleryCards(data.hits);
-        //     loadMoreBtnEl.classList.add('is-hidden');
-        //     Notify.failure("We're sorry, but you've reached the end of search results.");
-        //     return;
-        // }
-
         Notify.success(`Hooray! We found ${data.totalHits} images.`);
         galleryList.innerHTML = createGalleryCards(data.hits);
+        gallery.refresh();
         observer.observe(targetEl);
         gallery.on('show.simplelightbox', function () {
         });
@@ -96,26 +90,8 @@ const onSearchFormSubmit = async event => {
     searchBtn.disabled = false
 }
 
-// const onLoadMoreBtnClick = async event => {
-//     try {
-//         unsplashApi.page += 1;
-//         const { data } = await unsplashApi.fetchPhotosbyQuery();
-//         galleryList.insertAdjacentHTML('beforeend', createGalleryCards(data.hits));
-//         gallery.refresh();
-//         if (data.totalHits === unsplashApi.page) {
-//             Notify.failure("We're sorry, but you've reached the end of search results.");
-//             searchBtn.disabled = false;
-//         }
-
-//     } catch (error) {
-//         console.log(error);
-//     }
-// }
-
-gallery.on('show.simplelightbox', function () { });
 
 searchFormEl.addEventListener('submit', onSearchFormSubmit);
-// loadMoreBtnEl.addEventListener('click', onLoadMoreBtnClick);
 
 
 
