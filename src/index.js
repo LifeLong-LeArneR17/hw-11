@@ -1,150 +1,140 @@
-import { Api } from "./FetchPictures";
-import { createGalleryCards } from "./gallery";
+import { Api } from './FetchPictures';
+import { createGalleryCards } from './gallery';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
-
 
 const unsplashApi = new Api();
 const searchFormEl = document.querySelector('#search-form');
 const galleryList = document.querySelector('.gallery');
 const loadMoreBtnEl = document.querySelector('.load-more');
 const searchBtn = document.querySelector('button');
-const targetEl = document.querySelector('.target-element')
+const targetEl = document.querySelector('.target-element');
 
-const observer = new IntersectionObserver(async entries => {
+const observer = new IntersectionObserver(
+  async entries => {
     if (!entries[0].isIntersecting) {
-        return;
+      return;
     }
     try {
-        const { data } = await unsplashApi.fetchPhotosbyQuery();
-        if (data.totalHits === data.total) {
-            Notify.failure("We're sorry, but you've reached the end of search results.");
-            searchBtn.disabled = false;
-        }
+      const { data } = await unsplashApi.fetchPhotosbyQuery();
+      if (data.totalHits === data.total) {
+        Notify.failure(
+          "We're sorry, but you've reached the end of search results."
+        );
+        searchBtn.disabled = false;
+      }
     } catch (error) {
-        console.log(error);
+      console.log(error);
     }
-},
-    {
-        root: null,
-        rootMargin: '0px 0px 400px 0px',
-        threshold: 1.0,
-    }
+  },
+  {
+    root: null,
+    rootMargin: '0px 0px 400px 0px',
+    threshold: 1.0,
+  }
 );
 
-
-
 const onSearchFormSubmit = async event => {
-    event.preventDefault();
-    searchBtn.disabled = true;
-    unsplashApi.query = event.target.elements.searchQuery.value;
-    unsplashApi.page = 1;
-    try {
-        const { data } = await unsplashApi.fetchPhotosbyQuery();
-        if (data.hits.length === 0) {
-            Notify.failure('Sorry, there are no images matching your search query. Please try again.');
-            event.target.reset();
-            loadMoreBtnEl.classList.add('is-hidden');
-            galleryList.innerHTML = '';
-            searchBtn.disabled = false;
-            return;
-        }
+  event.preventDefault();
+  searchBtn.disabled = true;
+  unsplashApi.query = event.target.elements.searchQuery.value;
+  unsplashApi.page = 1;
+  try {
+    const { data } = await unsplashApi.fetchPhotosbyQuery();
+    if (data.hits.length === 0) {
+      Notify.failure(
+        'Sorry, there are no images matching your search query. Please try again.'
+      );
+      event.target.reset();
+      loadMoreBtnEl.classList.add('is-hidden');
+      galleryList.innerHTML = '';
+      searchBtn.disabled = false;
+      return;
+    }
 
-        if (data.totalHits === 1) {
-            galleryList.innerHTML = createGalleryCards(data.hits);
-            loadMoreBtnEl.classList.add('is-hidden');
-            return;
-        }
+    if (data.totalHits === 1) {
+      galleryList.innerHTML = createGalleryCards(data.hits);
+      loadMoreBtnEl.classList.add('is-hidden');
+      return;
+    }
 
-        if (data.total === data.totalHits) {
-            Notify.success(`Hooray! We found ${data.totalHits} images.`);
-            galleryList.innerHTML = createGalleryCards(data.hits);
-            loadMoreBtnEl.classList.add('is-hidden');
-            searchBtn.disabled = false;
-            return;
-        }
+    if (data.total === data.totalHits) {
+      Notify.success(`Hooray! We found ${data.totalHits} images.`);
+      galleryList.innerHTML = createGalleryCards(data.hits);
+      loadMoreBtnEl.classList.add('is-hidden');
+      searchBtn.disabled = false;
+      return;
+    }
 
     Notify.success(`Hooray! We found ${data.totalHits} images.`);
     galleryList.innerHTML = createGalleryCards(data.hits);
     observer.observe(targetEl);
     loadMoreBtnEl.classList.remove('is-hidden');
+  } catch (error) {
+    console.log(error);
+  }
+  searchBtn.disabled = false;
 
-    } catch (error) {
-        console.log(error);
-    }
-    searchBtn.disabled = false
-    
-    // unsplashApi.fetchPhotosbyQuery().then( ({data}) => {
-        // if (data.hits.length === 0) {
-        //     Notify.failure('Sorry, there are no images matching your search query. Please try again.');
-        //     event.target.reset();
-        //     loadMoreBtnEl.classList.add('is-hidden');
-        //     galleryList.innerHTML = '';
-        //     return;
-        // }
+  // unsplashApi.fetchPhotosbyQuery().then( ({data}) => {
+  // if (data.hits.length === 0) {
+  //     Notify.failure('Sorry, there are no images matching your search query. Please try again.');
+  //     event.target.reset();
+  //     loadMoreBtnEl.classList.add('is-hidden');
+  //     galleryList.innerHTML = '';
+  //     return;
+  // }
 
-        // if (data.totalHits === 1) {
-        //     galleryList.innerHTML = createGalleryCards(data.hits);
-        //     loadMoreBtnEl.classList.add('is-hidden');
-        //     return;
-        // }
+  // if (data.totalHits === 1) {
+  //     galleryList.innerHTML = createGalleryCards(data.hits);
+  //     loadMoreBtnEl.classList.add('is-hidden');
+  //     return;
+  // }
 
-        // if (data.total === data.totalHits) {
-        //     galleryList.innerHTML = createGalleryCards(data.hits);
-        //     loadMoreBtnEl.classList.add('is-hidden');
-        //     Notify.failure("We're sorry, but you've reached the end of search results.");
-        //     return;
-        // }
+  // if (data.total === data.totalHits) {
+  //     galleryList.innerHTML = createGalleryCards(data.hits);
+  //     loadMoreBtnEl.classList.add('is-hidden');
+  //     Notify.failure("We're sorry, but you've reached the end of search results.");
+  //     return;
+  // }
 
-//         Notify.success(`Hooray! We found ${data.totalHits} images.`);
-//         galleryList.innerHTML = createGalleryCards(data.hits);
-//         loadMoreBtnEl.classList.remove('is-hidden');
-//     }).catch(error => {
-//         console.log(error);
-//     }).finally(() => {
-//         searchBtn.disabled = false
-//     })
-}
+  //         Notify.success(`Hooray! We found ${data.totalHits} images.`);
+  //         galleryList.innerHTML = createGalleryCards(data.hits);
+  //         loadMoreBtnEl.classList.remove('is-hidden');
+  //     }).catch(error => {
+  //         console.log(error);
+  //     }).finally(() => {
+  //         searchBtn.disabled = false
+  //     })
+};
 
 const onLoadMoreBtnClick = event => {
-    unsplashApi.page += 1;
+  unsplashApi.page += 1;
 
-    unsplashApi.fetchPhotosbyQuery().then( ({data}) => {
-        galleryList.insertAdjacentHTML('beforeend', createGalleryCards(data.hits))
-        const { height: cardHeight } = document
-            .querySelector(".gallery")
-            .firstElementChild.getBoundingClientRect();
-        console.log(cardHeight);
-        window.scrollBy({
-            top: cardHeight * 2,
-            behavior: "smooth",
-        });
-        if (data.totalHits === data.total) {
-            loadMoreBtnEl.classList.add('is-hidden');
-            Notify.info("We're sorry, but you've reached the end of search results.");
-        }
-    }).catch(error => {
-        console.log(error);
+  unsplashApi
+    .fetchPhotosbyQuery()
+    .then(({ data }) => {
+      galleryList.insertAdjacentHTML(
+        'beforeend',
+        createGalleryCards(data.hits)
+      );
+      const { height: cardHeight } = document
+        .querySelector('.gallery')
+        .firstElementChild.getBoundingClientRect();
+      console.log(cardHeight);
+      window.scrollBy({
+        top: cardHeight * 2,
+        behavior: 'smooth',
+      });
+      if (data.totalHits === data.total) {
+        loadMoreBtnEl.classList.add('is-hidden');
+        Notify.info(
+          "We're sorry, but you've reached the end of search results."
+        );
+      }
     })
-}
-
-
-
-
-
-
-
-
+    .catch(error => {
+      console.log(error);
+    });
+};
 
 searchFormEl.addEventListener('submit', onSearchFormSubmit);
 loadMoreBtnEl.addEventListener('click', onLoadMoreBtnClick);
-
-
-
-
-
-
-
-
-
-
-
