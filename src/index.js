@@ -1,6 +1,9 @@
 import { Api } from './FetchPictures';
 import { createGalleryCards } from './gallery';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import SimpleLightbox from "simplelightbox";
+import "simplelightbox/dist/simple-lightbox.min.css";
+
 
 const unsplashApi = new Api();
 const searchFormEl = document.querySelector('#search-form');
@@ -135,6 +138,12 @@ const onLoadMoreBtnClick = event => {
       console.log(error);
     });
 };
+
+
+let gallery = new SimpleLightbox('.gallery a');
+gallery.on('show.simplelightbox', function () {
+    // do something…
+});
 
 searchFormEl.addEventListener('submit', onSearchFormSubmit);
 loadMoreBtnEl.addEventListener('click', onLoadMoreBtnClick);

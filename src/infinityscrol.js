@@ -16,7 +16,7 @@ const observer = new IntersectionObserver(async entries => {
         unsplashApi.page += 1;
         const { data } = await unsplashApi.fetchPhotosbyQuery();
         galleryList.insertAdjacentHTML('beforeend', createGalleryCards(data.hits));
-        if (data.totalHits === unsplashApi.page) {
+        if (data.totalHits === data.total) {
             Notify.failure("We're sorry, but you've reached the end of search results.");
             searchBtn.disabled = false;
         }
