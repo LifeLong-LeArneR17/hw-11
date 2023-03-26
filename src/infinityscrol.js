@@ -1,5 +1,5 @@
 import SimpleLightbox from "simplelightbox";
-import "simplelightbox/dist/simple-lightbox.min.css";
+import 'simplelightbox/dist/simple-lightbox.min.css';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { Api } from "./FetchPictures";
 import { createGalleryCards } from "./gallery";
@@ -14,16 +14,10 @@ const loadMoreBtnEl = document.querySelector('.load-more');
 const searchBtn = document.querySelector('button');
 const targetEl = document.querySelector('.target-element')
 const galleryImages = document.querySelector('.gallery');
+console.log(galleryImages);
 
 
 
-let gallery = new SimpleLightbox('.gallery a', {
-    captionsData: 'alt',
-    captionDelay: 250,
-});
-
-
-gallery.on('show.simplelightbox', function () { });
 
 const observer = new IntersectionObserver(async entries => {
     if (!entries[0].isIntersecting) {
@@ -50,6 +44,12 @@ const observer = new IntersectionObserver(async entries => {
     }
 );
 
+
+let gallery = new SimpleLightbox('.gallery a', {
+    captionsData: 'alt',
+    captionDelay: 250,
+});
+
 const onSearchFormSubmit = async event => {
     event.preventDefault();
     searchBtn.disabled = true;
@@ -63,6 +63,8 @@ const onSearchFormSubmit = async event => {
             event.target.reset();
             loadMoreBtnEl.classList.add('is-hidden');
             galleryList.innerHTML = '';
+            gallery.refresh();
+
             searchBtn.disabled = false;
             return;
         }
@@ -93,23 +95,26 @@ const onSearchFormSubmit = async event => {
     searchBtn.disabled = false
 }
 
-const onLoadMoreBtnClick = async event => {
-    try {
-        unsplashApi.page += 1;
-        const { data } = await unsplashApi.fetchPhotosbyQuery();
-        galleryList.insertAdjacentHTML('beforeend', createGalleryCards(data.hits));
-        if (data.totalHits === unsplashApi.page) {
-            Notify.failure("We're sorry, but you've reached the end of search results.");
-            searchBtn.disabled = false;
-        }
+// const onLoadMoreBtnClick = async event => {
+//     try {
+//         unsplashApi.page += 1;
+//         const { data } = await unsplashApi.fetchPhotosbyQuery();
+//         galleryList.insertAdjacentHTML('beforeend', createGalleryCards(data.hits));
+//         gallery.refresh();
+//         if (data.totalHits === unsplashApi.page) {
+//             Notify.failure("We're sorry, but you've reached the end of search results.");
+//             searchBtn.disabled = false;
+//         }
 
-    } catch (error) {
-        console.log(error);
-    }
-}
+//     } catch (error) {
+//         console.log(error);
+//     }
+// }
+
+gallery.on('show.simplelightbox', function () { });
 
 searchFormEl.addEventListener('submit', onSearchFormSubmit);
-loadMoreBtnEl.addEventListener('click', onLoadMoreBtnClick);
+// loadMoreBtnEl.addEventListener('click', onLoadMoreBtnClick);
 
 
 
