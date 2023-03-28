@@ -86,7 +86,6 @@ const onSearchFormSubmit = async event => {
     observer.observe(targetEl);
     loadMoreBtnEl.classList.remove('is-hidden');
   } catch (error) {
-    console.log(error);
   }
   searchBtn.disabled = false;
 
