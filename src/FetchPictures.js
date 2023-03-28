@@ -2,7 +2,7 @@
 import axios from "axios";
 
 export class Api {
-    static BASE_URL = 'https://pixabay.com/api';
+    static BASE_URL = 'https://pixabay.com/api/';
     // static API_KEY = '32926626-9f8218f21c9ddc7b36f942801';
     constructor() {
         this.page = 1;
