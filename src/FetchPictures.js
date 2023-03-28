@@ -3,7 +3,7 @@ import axios from "axios";
 
 export class Api {
     static BASE_URL = 'https://pixabay.com/api';
-    static API_KEY = '32926626-9f8218f21c9ddc7b36f942801';
+    // static API_KEY = '32926626-9f8218f21c9ddc7b36f942801';
     constructor() {
         this.page = 1;
         this.query = null;
@@ -13,6 +13,7 @@ export class Api {
     fetchPhotosbyQuery() {
         const searchParams = {
             params: {
+                key:'32926626-9f8218f21c9ddc7b36f942801',
                 q: this.query,
                 page: this.page,
                 image_type: 'photo',
@@ -22,8 +23,9 @@ export class Api {
             },
            
         }
-        return axios.get(`${Api.BASE_URL}?key=32926626-9f8218f21c9ddc7b36f942801&`, searchParams);
+        // return axios.get(`${Api.BASE_URL}?key=32926626-9f8218f21c9ddc7b36f942801&`, searchParams);
 
+        return axios.get(`${Api.BASE_URL}`, searchParams);
 
 
         // return fetch(`${Api.BASE_URL}?key=32926626-9f8218f21c9ddc7b36f942801&${searchParams}`).then(response => {
